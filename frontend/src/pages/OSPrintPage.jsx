@@ -1,32 +1,50 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { api, formatDateTime } from "@/lib/api";
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/StatusBadge";
-import { ArrowLeft, Printer, Bus } from "lucide-react";
+import { ArrowLeft, Printer, Bus, LogOut } from "lucide-react";
 
 export default function OSPrintPage() {
   const { id } = useParams();
   const nav = useNavigate();
+  const { user, logout } = useAuth();
   const [os, setOs] = useState(null);
 
   useEffect(() => {
     api.get(`/service-orders/${id}`).then((r) => setOs(r.data));
   }, [id]);
 
+  const goBack = () => {
+    const home = user?.role === "supervisor" ? "/admin" : "/driver";
+    nav(home);
+  };
+
+  const handleLogout = () => {
+    logout();
+    nav("/login");
+  };
+
   if (!os) return <div className="min-h-screen flex items-center justify-center text-slate-500">Carregando OS...</div>;
 
   return (
     <div className="min-h-screen bg-slate-100 py-6 px-4">
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-5 no-print">
-          <Button variant="outline" onClick={() => nav(-1)}>
+        <div className="flex items-center justify-between mb-5 no-print gap-2 flex-wrap">
+          <Button variant="outline" onClick={goBack} data-testid="back-btn">
             <ArrowLeft size={16} /> Voltar
           </Button>
-          <Button onClick={() => window.print()} data-testid="print-trigger-btn"
-            className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold">
-            <Printer size={16} /> Imprimir / Salvar PDF
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={() => window.print()} data-testid="print-trigger-btn"
+              className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold">
+              <Printer size={16} /> Imprimir / Salvar PDF
+            </Button>
+            <Button variant="outline" onClick={handleLogout} data-testid="logout-btn"
+              className="text-red-700 border-red-200 hover:bg-red-50">
+              <LogOut size={16} /> Sair
+            </Button>
+          </div>
         </div>
 
         <div className="print-sheet bg-white shadow-md rounded-lg p-8 sm:p-12 border border-slate-200">
