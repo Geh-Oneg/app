@@ -117,6 +117,26 @@ class UserApprove(BaseModel):
     role: Optional[str] = None
 
 
+class ChangePasswordInput(BaseModel):
+    current_password: str
+    new_password: str
+
+
+class ChangeProfileInput(BaseModel):
+    name: Optional[str] = None
+    current_password: str
+    new_password: Optional[str] = None
+
+
+class ForgotPasswordInput(BaseModel):
+    matricula: str
+    reason: Optional[str] = ""
+
+
+class ResetPasswordInput(BaseModel):
+    new_password: str
+
+
 # ---------------- App Setup ----------------
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
@@ -204,6 +224,95 @@ async def login(data: LoginInput):
 @api_router.get("/auth/me")
 async def me(user: dict = Depends(get_current_user)):
     return user
+
+
+@api_router.put("/auth/profile")
+async def update_profile(data: ChangeProfileInput, user: dict = Depends(get_current_user)):
+    current = await db.users.find_one({"id": user["id"]})
+    if not current or not verify_password(data.current_password, current["password_hash"]):
+        raise HTTPException(status_code=400, detail="Senha atual incorreta")
+    update = {}
+    if data.name and data.name.strip():
+        update["name"] = data.name.strip()
+    if data.new_password:
+        if len(data.new_password) < 4:
+            raise HTTPException(status_code=400, detail="Nova senha deve ter pelo menos 4 caracteres")
+        update["password_hash"] = hash_password(data.new_password)
+    if not update:
+        raise HTTPException(status_code=400, detail="Nenhuma alteração enviada")
+    await db.users.update_one({"id": user["id"]}, {"$set": update})
+    updated = await db.users.find_one({"id": user["id"]}, {"_id": 0, "password_hash": 0})
+    return updated
+
+
+@api_router.post("/auth/forgot-password")
+async def forgot_password(data: ForgotPasswordInput):
+    matricula = data.matricula.strip().upper()
+    user = await db.users.find_one({"matricula": matricula})
+    # Always return success-like response to avoid leaking which matriculas exist
+    if user:
+        existing = await db.password_resets.find_one({"user_id": user["id"], "status": "pending"})
+        if not existing:
+            await db.password_resets.insert_one({
+                "id": str(uuid.uuid4()),
+                "user_id": user["id"],
+                "matricula": user["matricula"],
+                "user_name": user["name"],
+                "reason": (data.reason or "").strip()[:300],
+                "status": "pending",
+                "created_at": datetime.now(timezone.utc).isoformat(),
+            })
+    return {"message": "Se a matrícula existir, o supervisor receberá sua solicitação de recuperação."}
+
+
+# ---------------- Password Resets (Supervisor) ----------------
+@api_router.get("/password-resets")
+async def list_resets(_: dict = Depends(require_supervisor), status: Optional[str] = "pending"):
+    query = {} if status == "all" else {"status": status}
+    items = await db.password_resets.find(query, {"_id": 0}).sort("created_at", -1).to_list(500)
+    return items
+
+
+@api_router.post("/password-resets/{reset_id}/approve")
+async def approve_reset(reset_id: str, data: ResetPasswordInput, supervisor: dict = Depends(require_supervisor)):
+    if len(data.new_password) < 4:
+        raise HTTPException(status_code=400, detail="Senha temporária precisa ter pelo menos 4 caracteres")
+    reset = await db.password_resets.find_one({"id": reset_id})
+    if not reset:
+        raise HTTPException(status_code=404, detail="Solicitação não encontrada")
+    if reset.get("status") != "pending":
+        raise HTTPException(status_code=400, detail="Solicitação já tratada")
+    await db.users.update_one(
+        {"id": reset["user_id"]},
+        {"$set": {"password_hash": hash_password(data.new_password)}}
+    )
+    await db.password_resets.update_one(
+        {"id": reset_id},
+        {"$set": {
+            "status": "approved",
+            "resolved_at": datetime.now(timezone.utc).isoformat(),
+            "resolved_by": supervisor["name"],
+            "temp_password": data.new_password,
+        }}
+    )
+    updated = await db.password_resets.find_one({"id": reset_id}, {"_id": 0})
+    return updated
+
+
+@api_router.post("/password-resets/{reset_id}/reject")
+async def reject_reset(reset_id: str, supervisor: dict = Depends(require_supervisor)):
+    reset = await db.password_resets.find_one({"id": reset_id})
+    if not reset:
+        raise HTTPException(status_code=404, detail="Solicitação não encontrada")
+    await db.password_resets.update_one(
+        {"id": reset_id},
+        {"$set": {
+            "status": "rejected",
+            "resolved_at": datetime.now(timezone.utc).isoformat(),
+            "resolved_by": supervisor["name"],
+        }}
+    )
+    return {"ok": True}
 
 
 # ---------------- Users (Admin) ----------------
@@ -375,9 +484,11 @@ async def stats(user: dict = Depends(get_current_user)):
     for s in VALID_STATUSES:
         by_status[s] = await db.service_orders.count_documents({**base, "status": s})
     pending_users = 0
+    pending_resets = 0
     if user["role"] == "supervisor":
         pending_users = await db.users.count_documents({"approved": False})
-    return {"total": total, "by_status": by_status, "pending_users": pending_users}
+        pending_resets = await db.password_resets.count_documents({"status": "pending"})
+    return {"total": total, "by_status": by_status, "pending_users": pending_users, "pending_resets": pending_resets}
 
 
 # ---------------- Register & CORS ----------------

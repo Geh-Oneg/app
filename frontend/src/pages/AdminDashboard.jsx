@@ -83,6 +83,13 @@ export default function AdminDashboard() {
               </div>
             </Link>
           )}
+          {stats?.pending_resets > 0 && (
+            <Link to="/admin/resets">
+              <div className="flex items-center gap-2 bg-orange-50 border border-orange-300 text-orange-800 px-4 py-2 rounded-md text-sm font-semibold" data-testid="pending-resets-alert">
+                <AlertCircle size={16} /> {stats.pending_resets} pedido(s) de recuperação de senha
+              </div>
+            </Link>
+          )}
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">

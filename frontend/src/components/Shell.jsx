@@ -1,7 +1,7 @@
 import React from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Bus, LogOut, LayoutDashboard, Users, Truck, Wrench } from "lucide-react";
+import { Bus, LogOut, LayoutDashboard, Users, Truck, Wrench, UserCircle, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Shell({ children }) {
@@ -14,6 +14,7 @@ export default function Shell({ children }) {
         { to: "/admin", icon: LayoutDashboard, label: "Painel" },
         { to: "/admin/vehicles", icon: Truck, label: "Veículos" },
         { to: "/admin/users", icon: Users, label: "Usuários" },
+        { to: "/admin/resets", icon: KeyRound, label: "Senhas" },
       ]
     : [
         { to: "/driver", icon: Wrench, label: "Minhas OSs" },
@@ -59,6 +60,12 @@ export default function Shell({ children }) {
                 {user?.matricula} · {user?.role === "supervisor" ? "Supervisor" : "Motorista"}
               </div>
             </div>
+            <Link to="/profile" data-testid="profile-link">
+              <Button variant="outline" size="sm"
+                className="bg-transparent border-slate-700 text-slate-100 hover:bg-slate-800 hover:text-amber-400">
+                <UserCircle size={16} /> <span className="hidden sm:inline">Perfil</span>
+              </Button>
+            </Link>
             <Button
               variant="outline"
               size="sm"

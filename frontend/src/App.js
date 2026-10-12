@@ -5,6 +5,9 @@ import { Toaster } from "sonner";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
+import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
+import ProfilePage from "@/pages/ProfilePage";
+import ResetsPage from "@/pages/ResetsPage";
 import DriverDashboard from "@/pages/DriverDashboard";
 import NewOrderPage from "@/pages/NewOrderPage";
 import AdminDashboard from "@/pages/AdminDashboard";
@@ -37,6 +40,9 @@ function App() {
             <Route path="/" element={<Root />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot" element={<ForgotPasswordPage />} />
+
+            <Route path="/profile" element={<Protected><ProfilePage /></Protected>} />
 
             <Route path="/driver" element={<Protected role="motorista"><DriverDashboard /></Protected>} />
             <Route path="/driver/new" element={<Protected role="motorista"><NewOrderPage /></Protected>} />
@@ -44,6 +50,7 @@ function App() {
             <Route path="/admin" element={<Protected role="supervisor"><AdminDashboard /></Protected>} />
             <Route path="/admin/vehicles" element={<Protected role="supervisor"><VehiclesPage /></Protected>} />
             <Route path="/admin/users" element={<Protected role="supervisor"><UsersPage /></Protected>} />
+            <Route path="/admin/resets" element={<Protected role="supervisor"><ResetsPage /></Protected>} />
 
             <Route path="/os/:id/print" element={<Protected><OSPrintPage /></Protected>} />
 

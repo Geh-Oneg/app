@@ -122,6 +122,12 @@ export default function LoginPage() {
               >
                 <LogIn size={18} /> {loading ? "Entrando..." : "Entrar"}
               </Button>
+              <div className="text-center">
+                <Link to="/forgot" data-testid="forgot-password-link"
+                  className="text-sm text-slate-600 hover:text-amber-700">
+                  Esqueci minha senha
+                </Link>
+              </div>
             </form>
             <div className="mt-6 pt-6 border-t border-slate-200 text-sm text-slate-600 text-center">
               Novo motorista?{" "}
