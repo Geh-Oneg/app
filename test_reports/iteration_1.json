@@ -1,0 +1,37 @@
+{
+  "summary": "First-finish smoke test on backend + frontend for Frota Escolar OS Management. All critical API endpoints work (auth, vehicles, users approval, OSs, status update, filters, stats, role protection). Admin login, admin dashboard with edit dialog, driver login, driver dashboard, new OS form all render with expected data-testids.",
+  "tested_scope": ["backend", "frontend", "auth", "integration"],
+  "passed": [
+    "POST /api/auth/login ADMIN001/admin123 returns JWT (token field) + user",
+    "GET /api/auth/me with Bearer token returns admin user",
+    "POST /api/vehicles creates vehicle (ABC1234 Mercedes OF-1721)",
+    "GET /api/vehicles returns list",
+    "POST /api/auth/register creates pending driver (approved=false)",
+    "Pending driver login blocked with 'Cadastro aguardando aprovação do supervisor'",
+    "GET /api/users?approved=false lists pending user",
+    "PATCH /api/users/{id} {approved:true} approves driver",
+    "Approved driver login + /auth/me works",
+    "POST /api/service-orders auto-generates os_number OS-2026-0001, status=Pendente, status_history seeded",
+    "GET /api/service-orders scoped to own OS for driver",
+    "GET /api/service-orders returns all OSs for supervisor",
+    "PATCH /api/service-orders/{id} updates status (Em Análise) + supervisor_notes and appends status_history",
+    "Status filter ?status=Em%20Análise returns matching OS",
+    "GET /api/stats returns total/by_status/pending_users",
+    "Role protection: driver PATCH service-order -> 403, POST vehicle -> 403, GET users -> 403",
+    "Login UI loads, admin login redirects to /admin",
+    "Admin dashboard shows filter-search, OS table with OS-2026-0001, edit dialog opens with edit-status-select + edit-notes-input",
+    "Driver dashboard shows create-os-button and OS list with supervisor note",
+    "New OS form renders vehicle-select, description-input, submit-os-btn"
+  ],
+  "failed": [],
+  "action_items": [
+    "Minor: Radix DialogContent is missing aria-describedby/Description (accessibility warning only, not blocking)."
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "retest_needed": false,
+  "full_testing_deferred": true,
+  "notes": {
+    "login_response_field": "Backend returns 'token' (not 'access_token'); frontend handles it correctly.",
+    "test_driver_created": "matricula=DRV25895 password=test123 (approved during this test)"
+  }
+}
