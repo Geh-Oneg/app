@@ -1,0 +1,179 @@
+{
+  "project_name": "Gestão de Ordens de Serviço (OS) - Frota de Ônibus Escolares",
+  "app_type": "dashboard / saas_app (sistema interno de gestão de frota)",
+  "design_system_archetype": "ARCHETYPE 2 (Performance & Tactical Precision) + ARCHETYPE 4 (Swiss & High Contrast)",
+  "language": "pt-BR",
+  "target_users": ["Motorista (Driver - Mobile-first priority)", "Supervisor/Admin (Fleet Manager - Desktop/Tablet priority)"],
+  "design_probabilistic_options": [
+    {
+      "option": 1,
+      "name": "Tactical School Amber & Deep Slate Navy (Selected Winner)",
+      "probability": 0.55,
+      "description": "High-contrast industrial aesthetic combining vibrant School Bus Yellow/Amber (#F59E0B / #D97706) with ultra-clean Deep Slate Navy (#0F172A) and stark gray backgrounds. Heavy emphasis on mobile touch targets (48px+), monospace license plate badges, and crisp official document styling for print/PDF."
+    },
+    {
+      "option": 2,
+      "name": "Swiss Industrial High-Density Monochrome",
+      "probability": 0.20,
+      "description": "Minimalist 1px grid layout with stark signal yellow accents for critical statuses and dense data tables for supervisory fleet control."
+    },
+    {
+      "option": 3,
+      "name": "Dark Tactical Command Dashboard",
+      "probability": 0.12,
+      "description": "OLED dark mode UI built for low-light morning depot operations with glowing status pills and high contrast night legibility."
+    },
+    {
+      "option": 4,
+      "name": "Neumorphic Depot Touchpanel",
+      "probability": 0.08,
+      "description": "Soft tactile rounded components with physical button cues suitable for rugged mobile devices."
+    },
+    {
+      "option": 5,
+      "name": "Retro Workshop Paper & Blueprint Hybrid",
+      "probability": 0.05,
+      "description": "Blueprint grid aesthetic with digital paper texture overlays mimicking traditional clipboard OS sheets."
+    }
+  ],
+  "color_palette": {
+    "theme_mode": "light_preferred_with_dark_toggle",
+    "primary": {
+      "hex": "#0F172A",
+      "tailwind": "slate-900",
+      "usage": "Primary headers, main action containers, active tabs, dark surface cards"
+    },
+    "brand_amber": {
+      "hex": "#F59E0B",
+      "accent_hex": "#D97706",
+      "bg_soft": "#FEF3C7",
+      "tailwind": "amber-500",
+      "usage": "Primary CTA buttons ('Criar Nova Solicitação'), school bus brand accents, focus rings"
+    },
+    "surface": {
+      "background": "#F8FAFC",
+      "card_bg": "#FFFFFF",
+      "border": "#E2E8F0",
+      "border_dark": "#334155"
+    },
+    "status_colors": {
+      "Pendente": {
+        "text": "#B45309",
+        "bg": "#FEF3C7",
+        "border": "#FCD34D",
+        "dot": "#F59E0B",
+        "label": "Pendente (Aguardando Análise)"
+      },
+      "Em Análise": {
+        "text": "#0369A1",
+        "bg": "#E0F2FE",
+        "border": "#7DD3FC",
+        "dot": "#0284C7",
+        "label": "Em Análise (Supervisor Avaliando)"
+      },
+      "Em Manutenção": {
+        "text": "#C2410C",
+        "bg": "#FFEDD5",
+        "border": "#FDBA74",
+        "dot": "#EA580C",
+        "label": "Em Manutenção (Na Oficina)"
+      },
+      "Concluída": {
+        "text": "#15803D",
+        "bg": "#DCFCE7",
+        "border": "#86EFAC",
+        "dot": "#16A34A",
+        "label": "Concluída (Pronto para Rodar)"
+      },
+      "Rejeitada": {
+        "text": "#B91C1C",
+        "bg": "#FEE2E2",
+        "border": "#FCA5A5",
+        "dot": "#DC2626",
+        "label": "Rejeitada"
+      }
+    }
+  },
+  "typography": {
+    "font_families": {
+      "heading": "Outfit, Barlow, sans-serif",
+      "body": "Inter, DM Sans, sans-serif",
+      "mono_data": "JetBrains Mono, SFMono-Regular, monospace"
+    },
+    "scale": {
+      "h1_hero": "text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight",
+      "h2_section": "text-2xl sm:text-3xl font-bold tracking-tight",
+      "h3_card": "text-lg sm:text-xl font-semibold",
+      "body": "text-sm sm:text-base leading-relaxed",
+      "plate_badge": "font-mono font-bold tracking-widest uppercase text-sm"
+    }
+  },
+  "spacing_and_layout": {
+    "mobile_first": true,
+    "touch_targets": "Minimum 48px height for buttons and form fields on mobile views",
+    "card_padding": "p-5 sm:p-6 lg:p-8 with 1px solid border (#E2E8F0)",
+    "grid_modes": {
+      "driver_dashboard": "Single column quick-card stack on mobile (space-y-4), 2-column on tablet",
+      "supervisor_dashboard": "Bento dashboard metric summary top row (4 cols), sticky filter bar, full responsive data table with horizontal scroll fallback",
+      "pdf_print_sheet": "Strict A4 physical layout dimensions (max-w-[800px] mx-auto, 24px internal print padding, black/white high-contrast ink safe styling)"
+    }
+  },
+  "key_screens_and_components": {
+    "screen_login": {
+      "header": "Portal de Manutenção - Frota Escolar",
+      "fields": ["Matrícula / ID", "Senha"],
+      "role_toggle_or_auto_detect": "Identifica se é Motorista ou Supervisor/Admin",
+      "decorations": "Background ambient image of yellow school bus with dark overlay scrim"
+    },
+    "screen_painel_motorista": {
+      "hero_action": "Grand button 'Criar Nova Solicitação' with Amber accent and plus icon",
+      "summary_bar": "Quick count badges (Suas OSs, Em Manutenção, Concluídas)",
+      "list_item": "Mobile-optimized card showing Plate (badge), Date/Time, OS Number (e.g. OS-2026-004), Problem Summary excerpt, Status Pill"
+    },
+    "screen_formulario_nova_os": {
+      "auto_filled": ["Matrícula", "Nome do Motorista", "Data e Hora atual"],
+      "interactive_fields": [
+        "Seleção do Veículo (Dropdown de Ônibus cadastrados com opção de entrada Manual)",
+        "Quilometragem (KM atual)",
+        "Grau de Urgência (Baixa, Média, Alta, Crítica)",
+        "Descrição detalhada do problema (textarea)",
+        "Fotos / Anexos (opcional)"
+      ]
+    },
+    "screen_painel_supervisor": {
+      "filters": ["Busca por Placa ou Motorista", "Filtro por Status", "Filtro por Período de Data"],
+      "metrics_cards": ["Total de OSs", "Pendentes", "Em Manutenção", "Concluídas Hoje"],
+      "table_actions": ["Mudar Status inline/modal", "Adicionar Observações do Supervisor", "Botão Gerar PDF / Imprimir Sheet"],
+      "admin_features": ["Gestão de Veículos (Cadastrar Placa, Modelo, Ano, Capacidade)", "Aprovação de novos usuários/motoristas"]
+    },
+    "screen_oficial_pdf_print": {
+      "title": "ORDEM DE SERVIÇO DE MANUTENÇÃO - VEÍCULOS ESCOLARES",
+      "header_elements": ["Logo Oficial / Brasão Escolar", "Número da OS", "Data de Emissão", "Status Atual"],
+      "sections": [
+        "Dados do Solicitante (Nome, Matrícula)",
+        "Dados do Veículo (Placa, Modelo, KM Atual, Prefixo)",
+        "Descrição Detalhada da Avaria / Problema",
+        "Observações do Supervisor & Parecer Técnico",
+        "Campos para Assinatura Física (Assinatura do Motorista + Assinatura do Mecânico/Supervisor)"
+      ]
+    }
+  },
+  "image_urls": {
+    "hero_school_bus": "https://images.unsplash.com/photo-1613688263142-67f1e0c25ef1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHwxfHx5ZWxsb3clMjBzY2hvb2wlMjBidXMlMjBmbGVldCUyMG1haW50ZW5hbmNlJTIwZHJpdmVyfGVufDB8fHx8MTc5MTg0MTgzNHww&ixlib=rb-4.1.0&q=85",
+    "school_bus_fleet": "https://images.unsplash.com/photo-1628471047004-f4fe9a1d9e18?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHwyfHx5ZWxsb3clMjBzY2hvb2wlMjBidXMlMjBmbGVldCUyMG1haW50ZW5hbmNlJTIwZHJpdmVyfGVufDB8fHx8MTc5MTg0MTgzNHww&ixlib=rb-4.1.0&q=85",
+    "school_bus_side": "https://images.unsplash.com/photo-1529530385195-5f7be6bb3d12?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHwzfHx5ZWxsb3clMjBzY2hvb2wlMjBidXMlMjBmbGVldCUyMG1haW50ZW5hbmNlJTIwZHJpdmVyfGVufDB8fHx8MTc5MTg0MTgzNHww&ixlib=rb-4.1.0&q=85",
+    "school_bus_front": "https://images.unsplash.com/photo-1527548052773-0cb9eeec5176?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHw0fHx5ZWxsb3clMjBzY2hvb2wlMjBidXMlMjBmbGVldCUyMG1haW50ZW5hbmNlJTIwZHJpdmVyfGVufDB8fHx8MTc5MTg0MTgzNHww&ixlib=rb-4.1.0&q=85"
+  },
+  "testing_and_accessibility": {
+    "data_testid_convention": "kebab-case, role-based (e.g., data-testid='login-matricula-input', data-testid='create-os-button', data-testid='os-status-badge', data-testid='print-os-pdf-button')",
+    "contrast_ratio": "APCA Compliant, text over badges must use high contrast dark ink on light tinted backgrounds",
+    "toast_notifications": "Use sonner for success/error feedback on status changes and OS submissions"
+  },
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
+    "Ensure all interaction components have explicitly specified data-testid attributes.",
+    "Do NOT use generic blue or default raw unstyled Tailwind forms; customize inputs with crisp borders, focus rings (amber/navy), and high contrast readable text.",
+    "Use Javascript (.js / .jsx) components as configured in the repository.",
+    "Ensure the PDF print component uses clean `@media print` CSS rules so that printing or downloading hides navigation overlays, headers, and buttons, rendering only the clean official OS form with signature blocks.",
+    "Support full Brazilian Portuguese (pt-BR) terminology throughout the application."
+  ]
+}

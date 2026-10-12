@@ -1,0 +1,178 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap");
+
+:root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --ink: #0f172a;
+    --ink-soft: #334155;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --amber: #f59e0b;
+    --amber-dark: #d97706;
+    --amber-soft: #fef3c7;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Inter", "DM Sans", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.font-display {
+    font-family: "Outfit", "Barlow", sans-serif;
+    letter-spacing: -0.02em;
+}
+
+.font-mono-plate {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+@layer base {
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 222 47% 11%;
+        --card: 0 0% 100%;
+        --card-foreground: 222 47% 11%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 222 47% 11%;
+        --primary: 222 47% 11%;
+        --primary-foreground: 0 0% 98%;
+        --secondary: 210 40% 96%;
+        --secondary-foreground: 222 47% 11%;
+        --muted: 210 40% 96%;
+        --muted-foreground: 215 16% 47%;
+        --accent: 38 92% 50%;
+        --accent-foreground: 222 47% 11%;
+        --destructive: 0 72% 51%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 214 32% 91%;
+        --input: 214 32% 91%;
+        --ring: 38 92% 50%;
+        --radius: 0.6rem;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+/* Status Badges */
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid;
+    white-space: nowrap;
+}
+.badge-status .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+.status-Pendente {
+    color: #b45309;
+    background: #fef3c7;
+    border-color: #fcd34d;
+}
+.status-Pendente .dot {
+    background: #f59e0b;
+}
+.status-EmAnalise {
+    color: #0369a1;
+    background: #e0f2fe;
+    border-color: #7dd3fc;
+}
+.status-EmAnalise .dot {
+    background: #0284c7;
+}
+.status-EmManutencao {
+    color: #c2410c;
+    background: #ffedd5;
+    border-color: #fdba74;
+}
+.status-EmManutencao .dot {
+    background: #ea580c;
+}
+.status-Concluida {
+    color: #15803d;
+    background: #dcfce7;
+    border-color: #86efac;
+}
+.status-Concluida .dot {
+    background: #16a34a;
+}
+.status-Rejeitada {
+    color: #b91c1c;
+    background: #fee2e2;
+    border-color: #fca5a5;
+}
+.status-Rejeitada .dot {
+    background: #dc2626;
+}
+
+.plate-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    background: #0f172a;
+    color: #fde68a;
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    font-size: 0.78rem;
+    border: 1px solid #1e293b;
+}
+
+/* Print styles */
+@media print {
+    body {
+        background: #fff;
+    }
+    .no-print,
+    .no-print * {
+        display: none !important;
+    }
+    .print-sheet {
+        box-shadow: none !important;
+        border: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    @page {
+        size: A4;
+        margin: 14mm;
+    }
+}
+
+.print-sheet {
+    background: #fff;
+    color: #0f172a;
+}
+
+/* Scroll smoothing */
+html {
+    scroll-behavior: smooth;
+}
