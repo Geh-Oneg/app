@@ -38,7 +38,6 @@ export default function OSPrintPage() {
               </div>
               <div>
                 <div className="font-display font-extrabold text-xl leading-tight">FROTA ESCOLAR</div>
-                <div className="text-xs text-slate-600 tracking-widest uppercase">Secretaria de Transporte Escolar</div>
               </div>
             </div>
             <div className="text-right">
