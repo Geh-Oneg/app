@@ -18,6 +18,9 @@ from datetime import datetime, timezone, timedelta
 
 
 # MongoDB
+print("TESTE_BACKEND:", os.getenv("TESTE_BACKEND"), flush=True)
+print("MONGODB_URI presente:", bool(os.getenv("MONGODB_URI")), flush=True)
+
 mongo_url = os.environ["MONGODB_URI"]
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ["DB_NAME"]]
