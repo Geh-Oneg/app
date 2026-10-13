@@ -169,12 +169,7 @@ async def seed_admin():
             "created_at": datetime.now(timezone.utc).isoformat(),
         })
         logger.info(f"Admin seeded: {matricula}")
-    elif not verify_password(password, existing["password_hash"]):
-        await db.users.update_one(
-            {"matricula": matricula},
-            {"$set": {"password_hash": hash_password(password), "approved": True, "role": "supervisor"}}
-        )
-
+   
 
 async def generate_os_number() -> str:
     year = datetime.now(timezone.utc).year
