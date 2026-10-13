@@ -23,10 +23,14 @@ export default function ResetsPage() {
   const [issued, setIssued] = useState(null); // { matricula, password }
 
   const load = () => {
-    api.get("/password-resets", { params: { status: tab } }).then((r) => setResets(r.data));
+    api.get("/password-resets", { params: { status: tab } })
+      .then((r) => setResets(r.data));
   };
 
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, [tab]);
+  useEffect(() => {
+     api.get("/password-resets", { params: { status: tab } })
+      .then((r) => setResets(r.data));
+  }, [tab]);
 
   const openApprove = (r) => {
     setCurrent(r);
