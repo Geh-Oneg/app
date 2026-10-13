@@ -10,12 +10,15 @@ export default function UsersPage() {
   const [users, setUsers] = useState([]);
   const [tab, setTab] = useState("pending"); // pending | all
 
-  const load = () => {
-    const params = tab === "pending" ? { approved: false } : {};
-    api.get("/users", { params }).then((r) => setUsers(r.data));
-  };
+ const load = () => {
+  const params = tab === "pending" ? { approved: false } : {};
+  api.get("/users", { params }).then((r) => setUsers(r.data));
+};
 
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, [tab]);
+useEffect(() => {
+  const params = tab === "pending" ? { approved: false } : {};
+  api.get("/users", { params }).then((r) => setUsers(r.data));
+}, [tab]);
 
   const approve = async (u, approved) => {
     await api.patch(`/users/${u.id}`, { approved });
