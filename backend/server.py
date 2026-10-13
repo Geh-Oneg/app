@@ -334,12 +334,36 @@ async def update_user(user_id: str, data: UserApprove, _: dict = Depends(require
 
 
 @api_router.delete("/users/{user_id}")
-async def delete_user(user_id: str, current: dict = Depends(require_supervisor)):
+async def delete_user(
+    user_id: str,
+    password: str = Query(...),
+    current: dict = Depends(require_supervisor)
+):
     if current["id"] == user_id:
-        raise HTTPException(status_code=400, detail="Não é possível excluir a si mesmo")
-    await db.users.delete_one({"id": user_id})
-    return {"ok": True}
+        raise HTTPException(
+            status_code=400,
+            detail="Não é possível excluir a si mesmo"
+        )
 
+    supervisor = await db.users.find_one({"id": current["id"]})
+
+    if not supervisor or not verify_password(
+        password, supervisor["password_hash"]
+    ):
+        raise HTTPException(
+            status_code=403,
+            detail="Senha do supervisor incorreta"
+        )
+
+    result = await db.users.delete_one({"id": user_id})
+
+    if result.deleted_count == 0:
+        raise HTTPException(
+            status_code=404,
+            detail="Usuário não encontrado"
+        )
+
+    return {"ok": True}
 
 # ---------------- Vehicles ----------------
 @api_router.get("/vehicles")
