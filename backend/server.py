@@ -336,7 +336,7 @@ async def update_user(user_id: str, data: UserApprove, _: dict = Depends(require
 @api_router.delete("/users/{user_id}")
 async def delete_user(
     user_id: str,
-    password: str = Query(...),
+    request: Request,
     current: dict = Depends(require_supervisor)
 ):
     if current["id"] == user_id:
@@ -352,6 +352,7 @@ async def delete_user(
         raise HTTPException(
             status_code=400,
             detail="Informe a senha do supervisor"
+        )
 
     supervisor = await db.users.find_one({"id": current["id"]})
 
@@ -372,7 +373,7 @@ async def delete_user(
         )
 
     return {"ok": True}
-
+    
 # ---------------- Vehicles ----------------
 @api_router.get("/vehicles")
 async def list_vehicles(_: dict = Depends(get_current_user)):
