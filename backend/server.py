@@ -345,6 +345,14 @@ async def delete_user(
             detail="Não é possível excluir a si mesmo"
         )
 
+    data = await request.json()
+    password = data.get("password")
+
+    if not isinstance(password, str) or not password:
+        raise HTTPException(
+            status_code=400,
+            detail="Informe a senha do supervisor"
+
     supervisor = await db.users.find_one({"id": current["id"]})
 
     if not supervisor or not verify_password(
