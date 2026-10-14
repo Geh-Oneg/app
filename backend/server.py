@@ -504,6 +504,41 @@ async def update_os_status(os_id: str, data: OSUpdateStatus, user: dict = Depend
     updated = await db.service_orders.find_one({"id": os_id}, {"_id": 0})
     return updated
 
+@api_router.delete("/service-orders/{os_id}")
+async def delete_os(
+    os_id: str,
+    request: Request,
+    user: dict = Depends(require_supervisor)
+):
+    data = await request.json()
+    password = data.get("password")
+
+    if not isinstance(password, str) or not password:
+        raise HTTPException(
+            status_code=400,
+            detail="Informe a senha do supervisor"
+        )
+
+    supervisor = await db.users.find_one({"id": user["id"]})
+
+    if not supervisor or not verify_password(
+        password, supervisor["password_hash"]
+    ):
+        raise HTTPException(
+            status_code=403,
+            detail="Senha do supervisor incorreta"
+        )
+
+    result = await db.service_orders.delete_one({"id": os_id})
+
+    if result.deleted_count == 0:
+        raise HTTPException(
+            status_code=404,
+            detail="OS não encontrada"
+        )
+
+    return {"ok": True}
+
 
 @api_router.get("/stats")
 async def stats(user: dict = Depends(get_current_user)):
