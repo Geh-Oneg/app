@@ -127,12 +127,26 @@ export default function AdminDashboard() {
               value={filters.plate} onChange={(e) => setFilters((f) => ({ ...f, plate: e.target.value }))} />
             <Input placeholder="Motorista" data-testid="filter-driver" className="h-11"
               value={filters.driver} onChange={(e) => setFilters((f) => ({ ...f, driver: e.target.value }))} />
-            <div className="flex gap-2">
-              <Input type="date" className="h-11" value={filters.date_from}
-                onChange={(e) => setFilters((f) => ({ ...f, date_from: e.target.value }))} />
-              <Input type="date" className="h-11" value={filters.date_to}
-                onChange={(e) => setFilters((f) => ({ ...f, date_to: e.target.value }))} />
-            </div>
+           
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-2 min-w-0 w-full">
+  <Input
+    type="date"
+    className="h-11 w-full min-w-0"
+    value={filters.date_from}
+    onChange={(e) =>
+      setFilters((f) => ({ ...f, date_from: e.target.value }))
+    }
+  />
+  <Input
+    type="date"
+    className="h-11 w-full min-w-0"
+    value={filters.date_to}
+    onChange={(e) =>
+      setFilters((f) => ({ ...f, date_to: e.target.value }))
+    }
+  />
+</div>
+
           </div>
         </Card>
 
