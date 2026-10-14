@@ -15,7 +15,7 @@ import {
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
-import { Search, Printer, Wrench, Clock, CheckCircle2, AlertCircle, Edit3 } from "lucide-react";
+import { Search, Printer, Wrench, Clock, CheckCircle2, AlertCircle, Edit3, Trash2 } from "lucide-react";
 
 export default function AdminDashboard() {
   const [orders, setOrders] = useState([]);
@@ -23,6 +23,9 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ search: "", status: "all", plate: "", driver: "", date_from: "", date_to: "" });
   const [editing, setEditing] = useState(null); // os object
+  const [deleting, setDeleting] = useState(null);
+  const [deletePassword, setDeletePassword] = useState("");
+  const [deletingLoading, setDeletingLoading] = useState(false);
   const [editForm, setEditForm] = useState({ status: "Pendente", supervisor_notes: "" });
 
   const load = useCallback(async () => {
