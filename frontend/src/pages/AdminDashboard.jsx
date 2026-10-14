@@ -109,7 +109,7 @@ export default function AdminDashboard() {
         </div>
 
         <Card className="p-4 border-slate-200">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-3">
             <div className="relative lg:col-span-2">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <Input placeholder="Buscar OS, placa, descrição..." data-testid="filter-search"
