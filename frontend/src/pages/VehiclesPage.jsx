@@ -12,6 +12,12 @@ import {
 } from "@/components/ui/dialog";
 import { Plus, Trash2, Truck } from "lucide-react";
 
+const formatDateBR = (date) => {
+  if (!date) return "Não informado";
+  const [year, month, day] = date.split("-");
+  return `${day}/${month}/${year}`;
+};
+
 export default function VehiclesPage() {
   const [vehicles, setVehicles] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
@@ -230,17 +236,17 @@ export default function VehiclesPage() {
 
           <div>
             <strong>Vencimento do licenciamento:</strong>{" "}
-            {selectedVehicle.licensing_due_date || "Não informado"}
+            {formatDateBR(selectedVehicle.licensing_due_date)}
           </div>
 
           <div>
             <strong>Próxima inspeção:</strong>{" "}
-            {selectedVehicle.inspection_due_date || "Não informado"}
+            {formatDateBR(selectedVehicle.inspection_due_date)}
           </div>
 
           <div>
             <strong>Próxima vistoria:</strong>{" "}
-            {selectedVehicle.survey_due_date || "Não informado"}
+            {formatDateBR(selectedVehicle.survey_due_date)}
           </div>
         </div>
 
