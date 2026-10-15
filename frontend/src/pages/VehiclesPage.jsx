@@ -11,7 +11,16 @@ import { Plus, Trash2, Truck } from "lucide-react";
 
 export default function VehiclesPage() {
   const [vehicles, setVehicles] = useState([]);
-  const [form, setForm] = useState({ plate: "", model: "", description: "" });
+  const [form, setForm] = useState({
+  plate: "",
+  model: "",
+  description: "",
+  renavam: "",
+  licensing_due_date: "",
+  inspection_due_date: "",
+  survey_due_date: "",
+  additional_notes: "",
+});
   const [loading, setLoading] = useState(false);
 
   const load = () => api.get("/vehicles").then((r) => setVehicles(r.data));
@@ -25,7 +34,16 @@ export default function VehiclesPage() {
     try {
       await api.post("/vehicles", form);
       toast.success("Veículo cadastrado");
-      setForm({ plate: "", model: "", description: "" });
+     setForm({
+  plate: "",
+  model: "",
+  description: "",
+  renavam: "",
+  licensing_due_date: "",
+  inspection_due_date: "",
+  survey_due_date: "",
+  additional_notes: "",
+});
       load();
     } catch (err) {
       toast.error(formatApiError(err.response?.data?.detail));
@@ -69,6 +87,60 @@ export default function VehiclesPage() {
                 value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
                 className="mt-1.5 min-h-[44px]" placeholder="Capacidade / Prefixo / Rota" />
             </div>
+            <div>
+  <Label htmlFor="renavam">RENAVAM</Label>
+  <Input
+    id="renavam"
+    value={form.renavam}
+    onChange={(e) => setForm((f) => ({ ...f, renavam: e.target.value }))}
+    className="h-11 mt-1.5"
+    placeholder="Número do RENAVAM"
+  />
+</div>
+
+<div>
+  <Label htmlFor="licensing">Vencimento do licenciamento</Label>
+  <Input
+    id="licensing"
+    type="date"
+    value={form.licensing_due_date}
+    onChange={(e) => setForm((f) => ({ ...f, licensing_due_date: e.target.value }))}
+    className="h-11 mt-1.5 w-full min-w-0"
+  />
+</div>
+
+<div>
+  <Label htmlFor="inspection">Próxima inspeção</Label>
+  <Input
+    id="inspection"
+    type="date"
+    value={form.inspection_due_date}
+    onChange={(e) => setForm((f) => ({ ...f, inspection_due_date: e.target.value }))}
+    className="h-11 mt-1.5 w-full min-w-0"
+  />
+</div>
+
+<div>
+  <Label htmlFor="survey">Próxima vistoria</Label>
+  <Input
+    id="survey"
+    type="date"
+    value={form.survey_due_date}
+    onChange={(e) => setForm((f) => ({ ...f, survey_due_date: e.target.value }))}
+    className="h-11 mt-1.5 w-full min-w-0"
+  />
+</div>
+
+<div className="sm:col-span-4">
+  <Label htmlFor="additional_notes">Observações adicionais</Label>
+  <Textarea
+    id="additional_notes"
+    value={form.additional_notes}
+    onChange={(e) => setForm((f) => ({ ...f, additional_notes: e.target.value }))}
+    className="mt-1.5"
+    placeholder="Informações adicionais sobre o veículo..."
+  />
+</div>
             <Button type="submit" disabled={loading} data-testid="add-vehicle-btn"
               className="h-11 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold">
               <Plus size={16} /> Adicionar
