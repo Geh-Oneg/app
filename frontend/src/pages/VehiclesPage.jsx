@@ -172,7 +172,7 @@ export default function VehiclesPage() {
                       {v.description && <div className="text-xs text-slate-500">{v.description}</div>}
                     </div>
                   </div>
-                  <Button
+
   <div className="flex items-center gap-2">
   <Button
     variant="outline"
