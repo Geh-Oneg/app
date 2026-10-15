@@ -21,6 +21,7 @@ const formatDateBR = (date) => {
 export default function VehiclesPage() {
   const [vehicles, setVehicles] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [editingVehicle, setEditingVehicle] = useState(null);
   const [form, setForm] = useState({
   plate: "",
   model: "",
@@ -37,13 +38,33 @@ export default function VehiclesPage() {
 
   useEffect(() => { load(); }, []);
 
+  const startEditing = (vehicle) => {
+  setEditingVehicle(vehicle);
+  setForm({
+    plate: vehicle.plate || "",
+    model: vehicle.model || "",
+    description: vehicle.description || "",
+    renavam: vehicle.renavam || "",
+    licensing_due_date: vehicle.licensing_due_date || "",
+    inspection_due_date: vehicle.inspection_due_date || "",
+    survey_due_date: vehicle.survey_due_date || "",
+    additional_notes: vehicle.additional_notes || "",
+  });
+  setSelectedVehicle(null);
+};
+
   const submit = async (e) => {
     e.preventDefault();
     if (!form.plate || !form.model) return toast.error("Placa e modelo são obrigatórios");
     setLoading(true);
     try {
-      await api.post("/vehicles", form);
-      toast.success("Veículo cadastrado");
+      if (editingVehicle) {
+  await api.put(`/vehicles/${editingVehicle.id}`, form);
+} else {
+  await api.post("/vehicles", form);
+}
+      toast.success(editingVehicle ? "Veículo atualizado com sucesso!" : "Veículo cadastrado");
+setEditingVehicle(null);
      setForm({
   plate: "",
   model: "",
@@ -153,8 +174,29 @@ export default function VehiclesPage() {
 </div>
             <Button type="submit" disabled={loading} data-testid="add-vehicle-btn"
               className="h-11 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold">
-              <Plus size={16} /> Adicionar
+              <Plus size={16} /> {editingVehicle ? "Salvar alterações" : "Adicionar"}
             </Button>
+            {editingVehicle && (
+  <Button
+    type="button"
+    variant="outline"
+    onClick={() => {
+      setEditingVehicle(null);
+      setForm({
+        plate: "",
+        model: "",
+        description: "",
+        renavam: "",
+        licensing_due_date: "",
+        inspection_due_date: "",
+        survey_due_date: "",
+        additional_notes: "",
+      });
+    }}
+  >
+    Cancelar edição
+  </Button>
+)}
           </form>
         </Card>
 
@@ -213,6 +255,14 @@ export default function VehiclesPage() {
     <DialogHeader>
       <DialogTitle>Ficha do Veículo</DialogTitle>
     </DialogHeader>
+    {selectedVehicle && (
+  <Button
+    variant="outline"
+    onClick={() => startEditing(selectedVehicle)}
+  >
+    Editar veículo
+  </Button>
+)}
 
     {selectedVehicle && (
       <div className="space-y-4 text-sm">
