@@ -7,10 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
 import { Plus, Trash2, Truck } from "lucide-react";
 
 export default function VehiclesPage() {
   const [vehicles, setVehicles] = useState([]);
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [form, setForm] = useState({
   plate: "",
   model: "",
@@ -168,16 +172,88 @@ export default function VehiclesPage() {
                       {v.description && <div className="text-xs text-slate-500">{v.description}</div>}
                     </div>
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => remove(v.id)}
-                    className="text-red-700 border-red-200 hover:bg-red-50">
-                    <Trash2 size={14} />
-                  </Button>
-                </div>
+                  <Button
+  <div className="flex items-center gap-2">
+  <Button
+    variant="outline"
+    size="sm"
+    onClick={() => setSelectedVehicle(v)}
+  >
+    Ver detalhes
+  </Button>
+
+  <Button
+    variant="outline"
+    size="sm"
+    onClick={() => remove(v.id)}
+    className="text-red-700 border-red-200 hover:bg-red-50"
+  >
+    <Trash2 size={14} />
+  </Button>
+</div>
+                  </div>
               ))}
             </div>
           )}
         </Card>
       </div>
+      <Dialog
+  open={!!selectedVehicle}
+  onOpenChange={(open) => {
+    if (!open) setSelectedVehicle(null);
+  }}
+>
+  <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+    <DialogHeader>
+      <DialogTitle>Ficha do Veículo</DialogTitle>
+    </DialogHeader>
+
+    {selectedVehicle && (
+      <div className="space-y-4 text-sm">
+        <div className="rounded-lg bg-slate-50 p-4">
+          <div className="text-xl font-bold font-mono">
+            {selectedVehicle.plate}
+          </div>
+          <div className="font-semibold mt-1">
+            {selectedVehicle.model}
+          </div>
+          <div className="text-slate-500 mt-1">
+            {selectedVehicle.description || "Sem descrição"}
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <div>
+            <strong>RENAVAM:</strong>{" "}
+            {selectedVehicle.renavam || "Não informado"}
+          </div>
+
+          <div>
+            <strong>Vencimento do licenciamento:</strong>{" "}
+            {selectedVehicle.licensing_due_date || "Não informado"}
+          </div>
+
+          <div>
+            <strong>Próxima inspeção:</strong>{" "}
+            {selectedVehicle.inspection_due_date || "Não informado"}
+          </div>
+
+          <div>
+            <strong>Próxima vistoria:</strong>{" "}
+            {selectedVehicle.survey_due_date || "Não informado"}
+          </div>
+        </div>
+
+        <div className="border-t pt-3">
+          <strong>Observações adicionais</strong>
+          <p className="mt-2 text-slate-600 whitespace-pre-wrap">
+            {selectedVehicle.additional_notes || "Nenhuma observação cadastrada."}
+          </p>
+        </div>
+      </div>
+    )}
+  </DialogContent>
+</Dialog>
     </Shell>
   );
 }
