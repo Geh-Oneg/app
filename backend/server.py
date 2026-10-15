@@ -408,6 +408,53 @@ async def create_vehicle(data: VehicleInput, _: dict = Depends(require_superviso
     vehicle.pop("_id", None)
     return vehicle
 
+@api_router.put("/vehicles/{vehicle_id}")
+async def update_vehicle(
+    vehicle_id: str,
+    data: VehicleInput,
+    _: dict = Depends(require_supervisor)
+):
+    vehicle = await db.vehicles.find_one({"id": vehicle_id})
+
+    if not vehicle:
+        raise HTTPException(
+            status_code=404,
+            detail="Veículo não encontrado"
+        )
+
+    plate = data.plate.strip().upper()
+
+    existing = await db.vehicles.find_one({
+        "plate": plate,
+        "id": {"$ne": vehicle_id}
+    })
+
+    if existing:
+        raise HTTPException(
+            status_code=400,
+            detail="Placa já cadastrada em outro veículo"
+        )
+
+    updates = {
+        "plate": plate,
+        "model": data.model.strip(),
+        "description": data.description or "",
+        "renavam": data.renavam or "",
+        "licensing_due_date": data.licensing_due_date or "",
+        "inspection_due_date": data.inspection_due_date or "",
+        "survey_due_date": data.survey_due_date or "",
+        "additional_notes": data.additional_notes or "",
+    }
+
+    await db.vehicles.update_one(
+        {"id": vehicle_id},
+        {"$set": updates}
+    )
+
+    return {
+        "message": "Veículo atualizado com sucesso",
+        "id": vehicle_id
+    }
 
 @api_router.delete("/vehicles/{vehicle_id}")
 async def delete_vehicle(vehicle_id: str, _: dict = Depends(require_supervisor)):
