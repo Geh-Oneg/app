@@ -100,6 +100,12 @@ class VehicleInput(BaseModel):
     model: str
     description: Optional[str] = ""
 
+    renavam: Optional[str] = ""
+    licensing_due_date: Optional[str] = ""
+    inspection_due_date: Optional[str] = ""
+    survey_due_date: Optional[str] = ""
+    additional_notes: Optional[str] = ""
+
 
 class OSCreate(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -391,6 +397,11 @@ async def create_vehicle(data: VehicleInput, _: dict = Depends(require_superviso
         "plate": plate,
         "model": data.model.strip(),
         "description": data.description or "",
+        "renavam": data.renavam or "",
+        "licensing_due_date": data.licensing_due_date or "",
+        "inspection_due_date": data.inspection_due_date or "",
+        "survey_due_date": data.survey_due_date or "",
+        "additional_notes": data.additional_notes or "",
         "created_at": datetime.now(timezone.utc).isoformat(),
     }
     await db.vehicles.insert_one(vehicle)
