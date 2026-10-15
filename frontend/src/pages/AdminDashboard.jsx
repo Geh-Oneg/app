@@ -26,6 +26,48 @@ export default function AdminDashboard() {
   const [deleting, setDeleting] = useState(null);
   const [deletePassword, setDeletePassword] = useState("");
   const [deletingLoading, setDeletingLoading] = useState(false);
+  
+  const confirmDelete = async () => {
+  if (!deleting || !deletePassword || deletingLoading) return;
+
+  setDeletingLoading(true);
+
+  try {
+    await api.delete(`/service-orders/${deleting.id}`, {
+      data: { password: deletePassword },
+    });
+
+    toast.success("Ordem de serviço excluída com sucesso!");
+
+    setDeleting(null);
+    setDeletePassword("");
+
+    setOrders((current) =>
+      current.filter((o) => o.id !== deleting.id)
+    );
+
+    setStats((current) =>
+      current
+        ? {
+            ...current,
+            total: Math.max(0, current.total - 1),
+            by_status: {
+              ...current.by_status,
+              [deleting.status]: Math.max(
+                0,
+                (current.by_status?.[deleting.status] || 0) - 1
+              ),
+            },
+          }
+        : current
+    );
+  } catch (error) {
+    toast.error(formatApiError(error));
+  } finally {
+    setDeletingLoading(false);
+  }
+};
+  
   const [editForm, setEditForm] = useState({ status: "Pendente", supervisor_notes: "" });
 
   const load = useCallback(async () => {
@@ -203,6 +245,18 @@ export default function AdminDashboard() {
                               <Printer size={14} /> PDF
                             </Button>
                           </Link>
+
+                          <Button
+  size="sm"
+  variant="outline"
+  className="ml-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+  onClick={() => {
+    setDeleting(o);
+    setDeletePassword("");
+  }}
+>
+  <Trash2 size={14} /> Excluir
+</Button>
                         </td>
                       </tr>
                     ))}
@@ -234,6 +288,18 @@ export default function AdminDashboard() {
                           <Printer size={14} /> PDF
                         </Button>
                       </Link>
+
+                      <Button
+  size="sm"
+  variant="outline"
+  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+  onClick={() => {
+    setDeleting(o);
+    setDeletePassword("");
+  }}
+>
+  <Trash2 size={14} />
+</Button>
                     </div>
                   </div>
                 ))}
@@ -278,6 +344,65 @@ export default function AdminDashboard() {
             <Button variant="outline" onClick={() => setEditing(null)}>Cancelar</Button>
             <Button onClick={saveEdit} data-testid="save-edit-btn"
               className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold">Salvar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+            <Dialog
+        open={!!deleting}
+        onOpenChange={(open) => {
+          if (!open && !deletingLoading) {
+            setDeleting(null);
+            setDeletePassword("");
+          }
+        }}
+      >
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Excluir Ordem de Serviço</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <p className="text-sm text-slate-700">
+              Tem certeza que deseja excluir a OS{" "}
+              <strong>{deleting?.os_number}</strong>?
+            </p>
+
+            <p className="text-sm text-red-600">
+              Atenção: esta exclusão é definitiva.
+            </p>
+
+            <div>
+              <Label>Senha do supervisor</Label>
+              <Input
+                type="password"
+                className="mt-1.5"
+                placeholder="Digite sua senha"
+                value={deletePassword}
+                onChange={(e) => setDeletePassword(e.target.value)}
+                disabled={deletingLoading}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              disabled={deletingLoading}
+              onClick={() => {
+                setDeleting(null);
+                setDeletePassword("");
+              }}
+            >
+              Cancelar
+            </Button>
+
+            <Button
+              variant="destructive"
+              disabled={!deletePassword || deletingLoading}
+              onClick={confirmDelete}
+            >
+              {deletingLoading ? "Excluindo..." : "Excluir OS"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
