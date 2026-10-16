@@ -179,8 +179,22 @@ async def seed_admin():
 
 async def generate_os_number() -> str:
     year = datetime.now(timezone.utc).year
-    count = await db.service_orders.count_documents({"os_number": {"$regex": f"^OS-{year}-"}})
-    return f"OS-{year}-{str(count + 1).zfill(4)}"
+    prefix = f"OS-{year}-"
+
+    orders = await db.service_orders.find(
+        {"os_number": {"$regex": f"^{prefix}"}}
+    ).to_list(length=None)
+
+    numbers = []
+    for order in orders:
+        try:
+            numbers.append(int(order["os_number"].split("-")[-1]))
+        except (ValueError, KeyError):
+            continue
+
+    next_number = max(numbers, default=0) + 1
+
+    return f"{prefix}{next_number:04d}"
 
 
 def clean_user(u: dict) -> dict:
